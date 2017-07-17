@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Popular Movie</string>
+    <string name="app_name_toprated_movie">Top Rated Movie</string>
+
+    <string name="item_popular">Show Popular Movies</string>
+    <string name="item_top_rated">Show Top Rated Movies</string>
+
+    <string name="movie_arraylist_key">MOVIE_ARRAY_LIST</string>
+
+    <string name="key_movie_shared_toprated">top_rated</string>
+    <string name="key_movie_shared_popularity">popular</string>
+
+    <string name="server_url">https://api.themoviedb.org</string>
+
+    <string name="movie_poster_base_url">https://image.tmdb.org/t/p/</string>
+    <string name="movie_poster_size">w185</string>
+    <string name="title_activity_main_detail">MainDetailActivity</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="data_for_detail_activity">data_for_detail_activity</string>
+</resources>

@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ public class MainDetailActivity extends AppCompatActivity {
         Movie movie = intent.getParcelableExtra(getString(R.string.data_for_detail_activity));
 
         movieTitle.setText(movie.getTitle());
+        setTitle(movie.getTitle());
 
         SimpleDateFormat jsonDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         SimpleDateFormat resultDateFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
@@ -68,5 +70,4 @@ public class MainDetailActivity extends AppCompatActivity {
                 .error(R.drawable.image_not_found)
                 .into(moviePoster);
     }
-
 }

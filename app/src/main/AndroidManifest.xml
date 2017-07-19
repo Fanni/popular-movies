@@ -23,7 +23,10 @@
         <activity
             android:name=".MainDetailActivity"
             android:label="@string/title_activity_main_detail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:parentActivityName=".MainActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
     </application>
 
 </manifest>

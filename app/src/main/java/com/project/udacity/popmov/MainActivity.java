@@ -5,59 +5,57 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.prefs.PreferenceChangeEvent;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.ItemClickListener, TaskCallback {
 
-    private GridView movieGridView;
+    private RecyclerView movieRecycleView;
     private ArrayList<Movie> movieArrayList;
     private ProgressBar progressBar;
+    private MovieAdapter movieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        movieGridView = (GridView) findViewById(R.id.gridView);
+        movieRecycleView = (RecyclerView) findViewById(R.id.gridView);
+
+        // From stackoverflow --> https://stackoverflow.com/a/38472370/3487252
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int noOfColumns = (int) (dpWidth / 140);
+        //
+
+        movieRecycleView.setLayoutManager(new GridLayoutManager(this, noOfColumns));
+//        movieRecycleView.addItemDecoration(new Spacei);
+
         progressBar = (ProgressBar) findViewById(R.id.pb_loading);
         if (savedInstanceState == null) {
-            getMoviesData(getMovieSortMethod());
+            setMovieArray(getMovieSortMethod());
         } else {
             if(savedInstanceState.containsKey(getString(R.string.movie_arraylist_key))) {
                 movieArrayList = savedInstanceState.getParcelableArrayList(getString(R.string.movie_arraylist_key));
-                movieGridView.setAdapter(new MovieAdapter(this, movieArrayList));
             }
-            else
-                movieGridView.setAdapter(new MovieAdapter(this, new ArrayList<Movie>()));
+            else {
+                movieArrayList = new ArrayList<>();
+            }
+            movieAdapter = new MovieAdapter(this, movieArrayList);
+            movieRecycleView.setAdapter(movieAdapter);
+            movieAdapter.setClickListener(this);
         }
-
-        movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Movie movie = (Movie) parent.getItemAtPosition(position);
-
-                Intent intent = new Intent(getApplicationContext(), MainDetailActivity.class);
-                intent.putExtra(getResources().getString(R.string.data_for_detail_activity), movie);
-
-                startActivity(intent);
-            }
-        });
     }
 
     // checking if network is available and device already connected
@@ -68,21 +66,10 @@ public class MainActivity extends AppCompatActivity {
         return networkInfo != null && networkInfo.isConnected();
     }
 
-    private void getMoviesData(String parameter) {
+    private void setMovieArray(String parameter) {
         if (isDeviceConnected()) {
-            TaskCallback taskCallback = new TaskCallback() {
-                @Override
-                public void callBackAfterTaskFinished(List<Movie> movies) {
-                    if (movies.size() == 0) {
-                        movies = new ArrayList<>();
-                    }
-                    movieGridView.setAdapter(new MovieAdapter(getApplicationContext(), movies));
-                    progressBar.setVisibility(View.INVISIBLE);
-                }
-            };
-
             progressBar.setVisibility(View.VISIBLE);
-            FetchMoviesAsyncTask fetchMoviesAsyncTask = new FetchMoviesAsyncTask(taskCallback);
+            FetchMoviesAsyncTask fetchMoviesAsyncTask = new FetchMoviesAsyncTask(MainActivity.this);
             fetchMoviesAsyncTask.execute(parameter);
         } else {
             Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_LONG).show();
@@ -91,11 +78,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        int numMovieObjects = movieGridView.getCount();
+        int numMovieObjects = movieAdapter.getItemCount();
         if (numMovieObjects > 0) {
             Movie[] movies = new Movie[numMovieObjects];
             for (int i = 0; i < numMovieObjects; i++) {
-                movies[i] = (Movie) movieGridView.getItemAtPosition(i);
+                movies[i] = movieAdapter.getItem(i);
             }
             ArrayList<Movie> movieArray = new ArrayList<>(Arrays.asList(movies));
             outState.putParcelableArrayList(getString(R.string.movie_arraylist_key), movieArray);
@@ -116,12 +103,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.top_rated:
                 this.setTitle(R.string.app_name_toprated_movie);
                 updateSharedData(getString(R.string.key_movie_shared_toprated));
-                getMoviesData(getMovieSortMethod());
+                setMovieArray(getMovieSortMethod());
                 return true;
             case R.id.popular:
                 this.setTitle(R.string.app_name);
                 updateSharedData(getString(R.string.key_movie_shared_popularity));
-                getMoviesData(getMovieSortMethod());
+                setMovieArray(getMovieSortMethod());
                 return true;
             default:
         }
@@ -140,5 +127,26 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(getString(R.string.movie_arraylist_key),data);
         editor.apply();
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Movie movie = movieAdapter.getItem(position);
+
+        Intent intent = new Intent(getApplicationContext(), MainDetailActivity.class);
+        intent.putExtra(getResources().getString(R.string.data_for_detail_activity), movie);
+
+        startActivity(intent);
+    }
+
+    @Override
+    public void callBackAfterTaskFinished(ArrayList<Movie> movies) {
+        if (movies.size() == 0) {
+            movies = new ArrayList<>();
+        }
+        movieAdapter = new MovieAdapter(this, movies);
+        movieRecycleView.setAdapter(movieAdapter);
+        movieAdapter.setClickListener(this);
+        progressBar.setVisibility(View.INVISIBLE);
     }
 }

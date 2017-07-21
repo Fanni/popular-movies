@@ -6,17 +6,11 @@
     android:layout_height="match_parent"
     tools:context="com.project.udacity.popmov.MainActivity">
 
-    <GridView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/gridView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:columnWidth="160dp"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="0dp"
-        android:horizontalSpacing="0dp"
-        android:stretchMode="columnWidth"
-        />
+        android:layout_height="match_parent" />
+
 
     <ProgressBar
         android:id="@+id/pb_loading"

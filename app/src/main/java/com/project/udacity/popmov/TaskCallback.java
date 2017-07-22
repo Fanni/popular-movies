@@ -1,11 +1,11 @@
 package com.project.udacity.popmov;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by ikhwan on 7/9/17.
  */
 
 public interface TaskCallback {
-    void callBackAfterTaskFinished(List<Movie> movies);
+    void callBackAfterTaskFinished(ArrayList<Movie> movies);
 }

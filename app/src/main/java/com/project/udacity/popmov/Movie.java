@@ -14,6 +14,7 @@ public class Movie implements Parcelable {
     private final String synopsis;
     private final String rating;
     private final String releaseDate;
+    private final String backdropImageLocation;
 
     @Override
     public int describeContents() {
@@ -27,14 +28,16 @@ public class Movie implements Parcelable {
         dest.writeString(this.synopsis);
         dest.writeString(this.rating);
         dest.writeString(this.releaseDate);
+        dest.writeString(this.backdropImageLocation);
     }
 
-    public Movie(String title, String posterLocation, String synopsis, String rating, String releaseDate) {
+    public Movie(String title, String posterLocation, String synopsis, String rating, String releaseDate , String backdropImageLocation) {
         this.title = title;
         this.posterLocation = posterLocation;
         this.synopsis = synopsis;
         this.rating = rating;
         this.releaseDate = releaseDate;
+        this.backdropImageLocation = backdropImageLocation;
     }
 
     private Movie(Parcel in) {
@@ -43,6 +46,7 @@ public class Movie implements Parcelable {
         this.synopsis = in.readString();
         this.rating = in.readString();
         this.releaseDate = in.readString();
+        this.backdropImageLocation = in.readString();
     }
 
     // getter
@@ -64,6 +68,10 @@ public class Movie implements Parcelable {
 
     public String getReleaseDate() {
         return releaseDate;
+    }
+
+    public String getBackdropImageLocation() {
+        return backdropImageLocation;
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {

@@ -20,18 +20,21 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements MovieAdapter.ItemClickListener, TaskCallback {
 
-    private RecyclerView movieRecycleView;
+    @BindView(R.id.gridView) RecyclerView movieRecycleView;
     private ArrayList<Movie> movieArrayList;
-    private ProgressBar progressBar;
+    @BindView(R.id.pb_loading) ProgressBar progressBar;
     private MovieAdapter movieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        movieRecycleView = (RecyclerView) findViewById(R.id.gridView);
+        ButterKnife.bind(this);
 
         // From stackoverflow --> https://stackoverflow.com/a/38472370/3487252
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
@@ -40,9 +43,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Item
         //
 
         movieRecycleView.setLayoutManager(new GridLayoutManager(this, noOfColumns));
-//        movieRecycleView.addItemDecoration(new Spacei);
 
-        progressBar = (ProgressBar) findViewById(R.id.pb_loading);
         if (savedInstanceState == null) {
             setMovieArray(getMovieSortMethod());
         } else {

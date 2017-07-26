@@ -14,6 +14,7 @@
 
     <string name="movie_poster_base_url">https://image.tmdb.org/t/p/</string>
     <string name="movie_poster_size">w185</string>
+    <string name="movie_backdrop_size">w500</string>
     <string name="title_activity_main_detail">MainDetailActivity</string>
     <string name="action_settings">Settings</string>
 

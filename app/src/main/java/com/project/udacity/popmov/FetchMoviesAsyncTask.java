@@ -104,6 +104,7 @@ public class FetchMoviesAsyncTask extends AsyncTask<String, Void, ArrayList<Movi
         final String OVERVIEW = "overview";
         final String VOTE_AVERAGE = "vote_average";
         final String RELEASE_DATE = "release_date";
+        final String BACKDROP_IMAGE_PATH = "backdrop_path";
 
         if (movieJsonString == null || "".equals(movieJsonString)) {
             return null;
@@ -119,7 +120,8 @@ public class FetchMoviesAsyncTask extends AsyncTask<String, Void, ArrayList<Movi
                     object.getString(POSTER_PATH),
                     object.getString(OVERVIEW),
                     object.getString(VOTE_AVERAGE),
-                    object.getString(RELEASE_DATE));
+                    object.getString(RELEASE_DATE),
+                    object.getString(BACKDROP_IMAGE_PATH));
         }
 
         ArrayList<Movie> movieArray = new ArrayList<>(Arrays.asList(movies));

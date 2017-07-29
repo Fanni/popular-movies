@@ -23,9 +23,9 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.ItemClickListener, TaskCallback {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.ItemClickListener, FetchMoviesAsyncTask.TaskCallback {
 
-    @BindView(R.id.gridView) RecyclerView movieRecycleView;
+    @BindView(R.id.recycler_view) RecyclerView movieRecycleView;
     private ArrayList<Movie> movieArrayList;
     @BindView(R.id.pb_loading) ProgressBar progressBar;
     private MovieAdapter movieAdapter;

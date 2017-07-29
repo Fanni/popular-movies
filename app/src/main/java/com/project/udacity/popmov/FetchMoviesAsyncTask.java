@@ -24,6 +24,10 @@ public class FetchMoviesAsyncTask extends AsyncTask<String, Void, ArrayList<Movi
 
     private final TaskCallback callbackDelegate;
 
+    public interface TaskCallback {
+        void callBackAfterTaskFinished(ArrayList<Movie> movies);
+    }
+
     FetchMoviesAsyncTask(TaskCallback taskCallback) {
         this.callbackDelegate = taskCallback;
     }

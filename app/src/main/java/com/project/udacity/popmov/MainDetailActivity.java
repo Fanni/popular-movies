@@ -24,7 +24,10 @@ import butterknife.ButterKnife;
 
 import static java.security.AccessController.getContext;
 
-public class MainDetailActivity extends AppCompatActivity implements FetchTrailerAsyncTask.TrailerTaskCallback, MovieTrailerAdapter.TrailerClickListener {
+public class MainDetailActivity extends AppCompatActivity implements FetchTrailerAsyncTask.TrailerTaskCallback,
+        FetchReviewAsyncTask.ReviewTaskCallback,
+        MovieTrailerAdapter.TrailerClickListener,
+        MovieReviewAdapter.ReviewClickListener {
 
     @BindView(R.id.tv_original_title) TextView movieTitle;
     @BindView(R.id.tv_release_date) TextView movieReleaseDate;
@@ -33,8 +36,10 @@ public class MainDetailActivity extends AppCompatActivity implements FetchTraile
     @BindView(R.id.iv_movie_poster) ImageView moviePoster;
     @BindView(R.id.iv_collapsing_image) ImageView backdropPoster;
     @BindView(R.id.trailers_recyclerView) RecyclerView recyclerViewMovieTrailers;
+    @BindView(R.id.review_recycleview) RecyclerView recyclerViewMovieReviews;
 
     private MovieTrailerAdapter movieTrailerAdapter;
+    private MovieReviewAdapter movieReviewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,12 @@ public class MainDetailActivity extends AppCompatActivity implements FetchTraile
 
         FetchTrailerAsyncTask fetchTrailerAsyncTask = new FetchTrailerAsyncTask(MainDetailActivity.this);
         fetchTrailerAsyncTask.execute(movie.getId());
+
+        LinearLayoutManager reviewLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerViewMovieReviews.setLayoutManager(reviewLayoutManager);
+
+        FetchReviewAsyncTask fetchReviewAsyncTask = new FetchReviewAsyncTask(MainDetailActivity.this);
+        fetchReviewAsyncTask.execute(movie.getId());
 
         movieTitle.setText(movie.getTitle());
         setTitle(movie.getTitle());
@@ -113,5 +124,23 @@ public class MainDetailActivity extends AppCompatActivity implements FetchTraile
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
         startActivity(i);
+    }
+
+    @Override
+    public void processReviewAfterTaskFinished(ArrayList<Review> reviewArrayList) {
+        if (reviewArrayList.size() == 0) {
+            reviewArrayList = new ArrayList<>();
+        }
+        movieReviewAdapter = new MovieReviewAdapter(this, reviewArrayList);
+        movieReviewAdapter.setReviewClickListener(this);
+        recyclerViewMovieReviews.setAdapter(movieReviewAdapter);
+    }
+
+    @Override
+    public void onReviewClick(View view, int position) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Review review = movieReviewAdapter.getReview(position);
+        intent.setData(Uri.parse(review.getReviewUrl()));
+        startActivity(intent);
     }
 }

@@ -131,6 +131,15 @@
                             android:textAlignment="textStart"
                             android:text="ini adalah penjelasan wawewow wilwwwww blablablablablablablablablablablablablablablablablabla"
                             />
+
+                        <android.support.v7.widget.RecyclerView
+                            xmlns:android="http://schemas.android.com/apk/res/android"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:id="@+id/trailers_recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginLeft="5dp"/>
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>

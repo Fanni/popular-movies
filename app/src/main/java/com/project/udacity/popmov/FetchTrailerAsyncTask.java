@@ -2,6 +2,7 @@ package com.project.udacity.popmov;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,35 +18,36 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Created by ikhwan on 7/9/17.
+ * Created by ikhwan on 7/29/17.
  */
 
-public class FetchMoviesAsyncTask extends AsyncTask<String, Void, ArrayList<Movie>> {
+public class FetchTrailerAsyncTask extends AsyncTask<String, Void, ArrayList<Trailer>> {
 
-    private final TaskCallback callbackDelegate;
+    private final TrailerTaskCallback callbackDelegate;
 
-    public interface TaskCallback {
-        void callBackAfterTaskFinished(ArrayList<Movie> movies);
+    public interface TrailerTaskCallback {
+        void callBackAfterTaskFinished(ArrayList<Trailer> trailerArrayList);
     }
 
-    FetchMoviesAsyncTask(TaskCallback taskCallback) {
-        this.callbackDelegate = taskCallback;
+    FetchTrailerAsyncTask(TrailerTaskCallback trailerTaskCallback) {
+        this.callbackDelegate = trailerTaskCallback;
     }
 
     @Override
-    protected ArrayList<Movie> doInBackground(String... params) {
+    protected ArrayList<Trailer> doInBackground(String... params) {
         if (params.length == 0) {
             return null;
         }
 
         HttpURLConnection httpURLConnection = null;
         BufferedReader bufferedReader = null;
-        String movieJsonString = null;
+        String trailerJsonString = null;
         String BASE_URL = "https://api.themoviedb.org/3/movie";
         String API_KEY_PARAM = "api_key";
 
         Uri uri = Uri.parse(BASE_URL).buildUpon()
                 .appendPath(params[0])
+                .appendPath("videos")
                 .appendQueryParameter(API_KEY_PARAM, BuildConfig.KEY)
                 .build();
 
@@ -73,7 +75,7 @@ public class FetchMoviesAsyncTask extends AsyncTask<String, Void, ArrayList<Movi
                 return null;
             }
 
-            movieJsonString = builder.toString();
+            trailerJsonString = builder.toString();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -92,7 +94,7 @@ public class FetchMoviesAsyncTask extends AsyncTask<String, Void, ArrayList<Movi
         }
 
         try {
-            return getMoviesFromJson(movieJsonString);
+            return getTrailersFromJson(trailerJsonString);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -100,45 +102,34 @@ public class FetchMoviesAsyncTask extends AsyncTask<String, Void, ArrayList<Movi
         return null;
     }
 
-    @org.jetbrains.annotations.Contract("null -> null")
-    private ArrayList<Movie> getMoviesFromJson(String movieJsonString) throws JSONException {
+    @Nullable
+    private ArrayList<Trailer> getTrailersFromJson(String trailerJsonString) throws JSONException {
         final String RESULTS = "results";
-        final String ID = "id";
-        final String ORIGINAL_TITLE = "original_title";
-        final String POSTER_PATH = "poster_path";
-        final String OVERVIEW = "overview";
-        final String VOTE_AVERAGE = "vote_average";
-        final String RELEASE_DATE = "release_date";
-        final String BACKDROP_IMAGE_PATH = "backdrop_path";
+        final String TRAILER_ID = "id";
+        final String TRAILER_KEY = "key";
 
-        if (movieJsonString == null || "".equals(movieJsonString)) {
+        if (trailerJsonString == null || "".equals(trailerJsonString)) {
             return null;
         }
 
-        JSONObject moviesJson = new JSONObject(movieJsonString);
-        JSONArray resultsArray = moviesJson.getJSONArray(RESULTS);
-        Movie[] movies = new Movie[resultsArray.length()];
+        JSONObject trailersJson = new JSONObject(trailerJsonString);
+        JSONArray resultsArray = trailersJson.getJSONArray(RESULTS);
+        Trailer[] trailers = new Trailer[resultsArray.length()];
 
         for (int i = 0; i < resultsArray.length(); i++) {
             JSONObject object = resultsArray.getJSONObject(i);
-            movies[i] = new Movie(
-                    object.getString(ID),
-                    object.getString(ORIGINAL_TITLE),
-                    object.getString(POSTER_PATH),
-                    object.getString(OVERVIEW),
-                    object.getString(VOTE_AVERAGE),
-                    object.getString(RELEASE_DATE),
-                    object.getString(BACKDROP_IMAGE_PATH));
+            trailers[i] = new Trailer(object.getString(TRAILER_ID),
+                    object.getString(TRAILER_KEY));
         }
 
-        ArrayList<Movie> movieArray = new ArrayList<>(Arrays.asList(movies));
+        ArrayList<Trailer> trailerArrayList = new ArrayList<>(Arrays.asList(trailers));
 
-        return movieArray;
+        return trailerArrayList;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<Movie> movies) {
-        super.onPostExecute(movies);
-        callbackDelegate.callBackAfterTaskFinished(movies);
+    protected void onPostExecute(ArrayList<Trailer> trailers) {
+        super.onPostExecute(trailers);
+        callbackDelegate.callBackAfterTaskFinished(trailers);
     }
 }

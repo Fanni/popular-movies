@@ -23,6 +23,7 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
     private final Context context;
     private final ArrayList<Trailer> trailers;
     private LayoutInflater layoutInflater;
+    private TrailerClickListener trailerClickListener;
 
     public MovieTrailerAdapter(Context context, ArrayList<Trailer> trailers) {
         this.context = context;
@@ -39,7 +40,7 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
 
     @Override
     public void onBindViewHolder(MovieTrailerAdapter.TrailerViewHolder holder, int position) {
-        Trailer trailer = trailers.get(position);
+        Trailer trailer = getTrailer(position);
         String trailerKey = trailer.getTrailerKey();
         String thumbnailTrailerURL = context.getString(R.string.movie_thumb_trailer_url)
                 .concat(trailerKey)
@@ -55,13 +56,32 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
         return trailers.size();
     }
 
-    public class TrailerViewHolder extends RecyclerView.ViewHolder {
+    public Trailer getTrailer(int position) {
+        return trailers.get(position);
+    }
+
+    public class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.trailer_image)
         ImageView imageView;
         public TrailerViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View v) {
+            if (trailerClickListener != null) {
+                trailerClickListener.onItemClick(v, getAdapterPosition());
+            }
+        }
+    }
+
+    public void setTrailerClickListener(TrailerClickListener trailerClickListener) {
+        this.trailerClickListener = trailerClickListener;
+    }
+
+    public interface TrailerClickListener {
+        void onItemClick(View view, int position);
     }
 }

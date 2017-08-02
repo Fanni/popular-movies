@@ -1,14 +1,11 @@
 package com.project.udacity.popmov;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,7 +24,7 @@ import butterknife.ButterKnife;
 
 import static java.security.AccessController.getContext;
 
-public class MainDetailActivity extends AppCompatActivity implements FetchTrailerAsyncTask.TrailerTaskCallback {
+public class MainDetailActivity extends AppCompatActivity implements FetchTrailerAsyncTask.TrailerTaskCallback, MovieTrailerAdapter.TrailerClickListener {
 
     @BindView(R.id.tv_original_title) TextView movieTitle;
     @BindView(R.id.tv_release_date) TextView movieReleaseDate;
@@ -105,6 +102,16 @@ public class MainDetailActivity extends AppCompatActivity implements FetchTraile
             trailerArrayList = new ArrayList<>();
         }
         movieTrailerAdapter = new MovieTrailerAdapter(this, trailerArrayList);
+        movieTrailerAdapter.setTrailerClickListener(this);
         recyclerViewMovieTrailers.setAdapter(movieTrailerAdapter);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Trailer trailer = movieTrailerAdapter.getTrailer(position);
+        String url = "https://www.youtube.com/watch?v=".concat(trailer.getTrailerKey());
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
     }
 }

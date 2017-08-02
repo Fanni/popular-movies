@@ -1,9 +1,15 @@
 package com.project.udacity.popmov;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,13 +18,16 @@ import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainDetailActivity extends AppCompatActivity {
+import static java.security.AccessController.getContext;
+
+public class MainDetailActivity extends AppCompatActivity implements FetchTrailerAsyncTask.TrailerTaskCallback {
 
     @BindView(R.id.tv_original_title) TextView movieTitle;
     @BindView(R.id.tv_release_date) TextView movieReleaseDate;
@@ -26,6 +35,9 @@ public class MainDetailActivity extends AppCompatActivity {
     @BindView(R.id.tv_overview) TextView movieOverview;
     @BindView(R.id.iv_movie_poster) ImageView moviePoster;
     @BindView(R.id.iv_collapsing_image) ImageView backdropPoster;
+    @BindView(R.id.trailers_recyclerView) RecyclerView recyclerViewMovieTrailers;
+
+    private MovieTrailerAdapter movieTrailerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +47,12 @@ public class MainDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Movie movie = intent.getParcelableExtra(getString(R.string.data_for_detail_activity));
+
+        LinearLayoutManager trailerLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerViewMovieTrailers.setLayoutManager(trailerLayoutManager);
+
+        FetchTrailerAsyncTask fetchTrailerAsyncTask = new FetchTrailerAsyncTask(MainDetailActivity.this);
+        fetchTrailerAsyncTask.execute(movie.getId());
 
         movieTitle.setText(movie.getTitle());
         setTitle(movie.getTitle());
@@ -78,5 +96,15 @@ public class MainDetailActivity extends AppCompatActivity {
                 .placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.image_not_found)
                 .into(backdropPoster);
+
+    }
+
+    @Override
+    public void callBackAfterTaskFinished(ArrayList<Trailer> trailerArrayList) {
+        if (trailerArrayList.size() == 0) {
+            trailerArrayList = new ArrayList<>();
+        }
+        movieTrailerAdapter = new MovieTrailerAdapter(this, trailerArrayList);
+        recyclerViewMovieTrailers.setAdapter(movieTrailerAdapter);
     }
 }

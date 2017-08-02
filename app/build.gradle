@@ -18,7 +18,7 @@ android {
         }
     }
     buildTypes.each {
-        it.buildConfigField('String', 'KEY', '"29027cdb571dd6b064f9b8e1992ee670"')
+        it.buildConfigField('String', 'KEY', '"API_KEY_HERE"')
     }
 }
 

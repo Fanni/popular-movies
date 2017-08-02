@@ -22,4 +22,7 @@
 
     <string name="movie_thumb_trailer_url">"http://img.youtube.com/vi/"</string>
     <string name="movie_thumb_trailer_name">"/hqdefault.jpg"</string>
+
+    <string name="review_header">Movie\'s Review</string>
+    <string name="trailer_header">Movie\'s Trailer</string>
 </resources>

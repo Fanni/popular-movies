@@ -27,6 +27,11 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
+        <provider
+            android:authorities="com.project.udacity.popmov"
+            android:name="com.project.udacity.popmov.MovieContentProvider"
+            android:exported="false" />
     </application>
 
 </manifest>

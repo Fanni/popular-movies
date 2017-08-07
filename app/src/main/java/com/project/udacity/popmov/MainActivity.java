@@ -3,6 +3,7 @@ package com.project.udacity.popmov;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,9 +46,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Item
 
         movieRecycleView.setLayoutManager(new GridLayoutManager(this, noOfColumns));
 
-        if (savedInstanceState == null) {
-            setMovieArray(getMovieSortMethod());
-        } else {
+        if (savedInstanceState != null) {
             if(savedInstanceState.containsKey(getString(R.string.movie_arraylist_key))) {
                 movieArrayList = savedInstanceState.getParcelableArrayList(getString(R.string.movie_arraylist_key));
             }
@@ -56,6 +56,18 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Item
             movieAdapter = new MovieAdapter(this, movieArrayList);
             movieRecycleView.setAdapter(movieAdapter);
             movieAdapter.setClickListener(this);
+        } else if (getMovieSortMethod().equals(getString(R.string.key_movie_shared_favorite))) {
+            setMovieArrayFromDB(getMovieSortMethod());
+        } else {
+            setMovieArray(getMovieSortMethod());
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (getMovieSortMethod().equals(getString(R.string.key_movie_shared_favorite))) {
+            setMovieArrayFromDB(getMovieSortMethod());
         }
     }
 
@@ -74,6 +86,38 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Item
             fetchMoviesAsyncTask.execute(parameter);
         } else {
             Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void setMovieArrayFromDB(String parameter) {
+
+        Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                MovieContract.MovieEntry.MOVIE_COLUMNS,
+                null,
+                null,
+                null
+        );
+        ArrayList<Movie> mMovieArrayList;
+        if (cursor != null) {
+            mMovieArrayList = new ArrayList<>(cursor.getCount());
+            cursor.moveToFirst();
+
+            while (!cursor.isAfterLast()) {
+                String id = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID));
+                String title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE));
+                String posterPath = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH));
+                String overview = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW));
+                String rating = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE));
+                String releaseDate = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE));
+                String backdropPath = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_BACKDROP_IMAGE_PATH));
+                Movie movie = new Movie(id,title,posterPath,overview,rating,releaseDate,backdropPath);
+                mMovieArrayList.add(movie);
+                cursor.moveToNext();
+            }
+            cursor.close();
+            movieAdapter = new MovieAdapter(this, mMovieArrayList);
+            movieRecycleView.setAdapter(movieAdapter);
+            movieAdapter.setClickListener(this);
         }
     }
 
@@ -111,6 +155,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Item
                 updateSharedData(getString(R.string.key_movie_shared_popularity));
                 setMovieArray(getMovieSortMethod());
                 return true;
+            case R.id.favorite:
+                this.setTitle(R.string.app_name_favorite);
+                updateSharedData(getString(R.string.key_movie_shared_favorite));
+                setMovieArrayFromDB(getMovieSortMethod());
             default:
         }
         return super.onOptionsItemSelected(item);

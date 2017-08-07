@@ -38,5 +38,14 @@ public class MovieContract {
 
         public static final String COLUMN_BACKDROP_IMAGE_PATH = "backdrop_image_path";
 
+        public static final String[] MOVIE_COLUMNS = {
+                COLUMN_MOVIE_ID,
+                COLUMN_TITLE,
+                COLUMN_POSTER_PATH,
+                COLUMN_OVERVIEW,
+                COLUMN_VOTE,
+                COLUMN_RELEASE_DATE,
+                COLUMN_BACKDROP_IMAGE_PATH
+        };
     }
 }

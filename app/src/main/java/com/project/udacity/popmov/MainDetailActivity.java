@@ -1,8 +1,11 @@
 package com.project.udacity.popmov;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +24,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static java.security.AccessController.getContext;
 
@@ -37,6 +41,7 @@ public class MainDetailActivity extends AppCompatActivity implements FetchTraile
     @BindView(R.id.iv_collapsing_image) ImageView backdropPoster;
     @BindView(R.id.trailers_recyclerView) RecyclerView recyclerViewMovieTrailers;
     @BindView(R.id.review_recycleview) RecyclerView recyclerViewMovieReviews;
+    @BindView(R.id.floating_favorite) FloatingActionButton floatingFavorite;
 
     private MovieTrailerAdapter movieTrailerAdapter;
     private MovieReviewAdapter movieReviewAdapter;
@@ -48,7 +53,7 @@ public class MainDetailActivity extends AppCompatActivity implements FetchTraile
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
-        Movie movie = intent.getParcelableExtra(getString(R.string.data_for_detail_activity));
+        final Movie movie = intent.getParcelableExtra(getString(R.string.data_for_detail_activity));
 
         LinearLayoutManager trailerLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerViewMovieTrailers.setLayoutManager(trailerLayoutManager);
@@ -79,6 +84,31 @@ public class MainDetailActivity extends AppCompatActivity implements FetchTraile
         movieReleaseDate.setText(dateRelease);
         movieRating.setText(movie.getRating());
         movieOverview.setText(movie.getSynopsis());
+
+        getFavoriteIcon(movie.getId());
+        floatingFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContentValues values = new ContentValues();
+                values.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movie.getId());
+                values.put(MovieContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
+                values.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPosterLocation());
+                values.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, movie.getSynopsis());
+                values.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
+                values.put(MovieContract.MovieEntry.COLUMN_VOTE, movie.getRating());
+                values.put(MovieContract.MovieEntry.COLUMN_BACKDROP_IMAGE_PATH, movie.getBackdropImageLocation());
+                Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
+                if (uri != null) {
+                    floatingFavorite.setImageResource(R.drawable.favorite);
+                } else {
+                    String stringId = movie.getId();
+                    uri = MovieContract.MovieEntry.CONTENT_URI;
+                    uri = uri.buildUpon().appendPath(stringId).build();
+                    getContentResolver().delete(uri, null, null);
+                    floatingFavorite.setImageResource(R.drawable.not_favorite);
+                }
+            }
+        });
 
         String url = new StringBuilder()
                 .append(this.getString(R.string.movie_poster_base_url))
@@ -142,5 +172,35 @@ public class MainDetailActivity extends AppCompatActivity implements FetchTraile
         Review review = movieReviewAdapter.getReview(position);
         intent.setData(Uri.parse(review.getReviewUrl()));
         startActivity(intent);
+    }
+
+    private void getFavoriteIcon(String movieId) {
+        Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                MovieContract.MovieEntry.MOVIE_COLUMNS,
+                null,
+                null,
+                null
+        );
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+
+            boolean inDb = false;
+            while (!cursor.isAfterLast()) {
+                String db_movie_id = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID));
+                if (db_movie_id.equals(movieId)) {
+                    inDb = true;
+                }
+                cursor.moveToNext();
+            }
+
+            cursor.close();
+
+            if (inDb) {
+                floatingFavorite.setImageResource(R.drawable.favorite);
+            } else {
+                floatingFavorite.setImageResource(R.drawable.not_favorite);
+            }
+        }
     }
 }

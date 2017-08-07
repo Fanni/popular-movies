@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Popular Movie</string>
     <string name="app_name_toprated_movie">Top Rated Movie</string>
+    <string name="app_name_favorite">Favorite</string>
 
     <string name="item_popular">Show Popular Movies</string>
     <string name="item_top_rated">Show Top Rated Movies</string>
@@ -9,6 +10,7 @@
 
     <string name="key_movie_shared_toprated">top_rated</string>
     <string name="key_movie_shared_popularity">popular</string>
+    <string name="key_movie_shared_favorite">favorite</string>
 
     <string name="server_url">https://api.themoviedb.org</string>
 

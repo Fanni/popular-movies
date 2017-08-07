@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -84,15 +85,17 @@ public class MovieContentProvider extends ContentProvider {
         final SQLiteDatabase sqLiteDatabase = movieDBHelper.getWritableDatabase();
 
         int match = sUriMatcher.match(uri);
-        Uri returnUri;
+        Uri returnUri = null;
 
         switch (match) {
             case MOVIES:
-                long id = sqLiteDatabase.insert(TABLE_NAME, null, values);
-                if (id > 0) {
-                    returnUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
-                } else {
-                    throw new android.database.SQLException("Failed to insert data into " + uri);
+                try {
+                    long id = sqLiteDatabase.insert(TABLE_NAME, null, values);
+                    if (id > 0) {
+                        returnUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
+                    }
+                } catch (SQLiteConstraintException e) {
+                    returnUri = null;
                 }
                 break;
             default:

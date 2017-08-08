@@ -5,6 +5,7 @@
 
     <string name="item_popular">Show Popular Movies</string>
     <string name="item_top_rated">Show Top Rated Movies</string>
+    <string name="item_favorite">Show Favorite Movies</string>
 
     <string name="movie_arraylist_key">MOVIE_ARRAY_LIST</string>
 

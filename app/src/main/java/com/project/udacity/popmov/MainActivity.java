@@ -123,16 +123,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Item
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        int numMovieObjects = movieAdapter.getItemCount();
-        if (numMovieObjects > 0) {
-            Movie[] movies = new Movie[numMovieObjects];
-            for (int i = 0; i < numMovieObjects; i++) {
-                movies[i] = movieAdapter.getItem(i);
+        if (movieAdapter != null) {
+            int numMovieObjects = movieAdapter.getItemCount();
+            if (numMovieObjects > 0) {
+                Movie[] movies = new Movie[numMovieObjects];
+                for (int i = 0; i < numMovieObjects; i++) {
+                    movies[i] = movieAdapter.getItem(i);
+                }
+                ArrayList<Movie> movieArray = new ArrayList<>(Arrays.asList(movies));
+                outState.putParcelableArrayList(getString(R.string.movie_arraylist_key), movieArray);
             }
-            ArrayList<Movie> movieArray = new ArrayList<>(Arrays.asList(movies));
-            outState.putParcelableArrayList(getString(R.string.movie_arraylist_key), movieArray);
         }
-
         super.onSaveInstanceState(outState);
     }
 
@@ -190,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Item
 
     @Override
     public void callBackAfterTaskFinished(ArrayList<Movie> movies) {
-        if (movies == null || movies.size() == 0) {
+        if (movies == null) {
             movies = new ArrayList<>();
             Toast.makeText(this,"Make sure you already insert your API Key in buld.gradle",Toast.LENGTH_LONG).show();
         }

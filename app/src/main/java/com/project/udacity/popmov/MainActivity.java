@@ -190,8 +190,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Item
 
     @Override
     public void callBackAfterTaskFinished(ArrayList<Movie> movies) {
-        if (movies.size() == 0) {
+        if (movies == null || movies.size() == 0) {
             movies = new ArrayList<>();
+            Toast.makeText(this,"Make sure you already insert your API Key in buld.gradle",Toast.LENGTH_LONG).show();
         }
         movieAdapter = new MovieAdapter(this, movies);
         movieRecycleView.setAdapter(movieAdapter);

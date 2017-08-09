@@ -28,4 +28,6 @@
 
     <string name="review_header">Movie\'s Review</string>
     <string name="trailer_header">Movie\'s Trailer</string>
+
+    <string name="default_api_placholder">API_KEY_HERE</string>
 </resources>

@@ -14,7 +14,7 @@
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="@dimen/collapsing_layout_height"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleTextAppearance="@android:color/transparent"
@@ -24,7 +24,7 @@
                 android:src="@drawable/placeholder_image"
                 android:id="@+id/iv_collapsing_image"
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="@dimen/collapsing_image_height"
                 android:scaleType="centerCrop"
                 android:fitsSystemWindows="true"
                 app:layout_collapseMode="parallax"/>
@@ -45,15 +45,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingBottom="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="16dp"
+            android:paddingBottom="@dimen/normal_padding_bottom"
+            android:paddingLeft="@dimen/normal_padding_left"
+            android:paddingRight="@dimen/normal_padding_right"
+            android:paddingTop="@dimen/normal_padding_top"
             tools:context="com.project.udacity.popmov.MainDetailActivity">
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingLeft="10dp">
+                android:paddingLeft="@dimen/min_padding_left">
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
@@ -62,16 +62,16 @@
                         android:id="@+id/tv_original_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="32dp"
+                        android:paddingBottom="@dimen/double_padding_bottom"
                         android:layout_gravity="center"
                         android:textStyle="bold"
-                        android:text="ini adalah judul"
+                        tools:text="@string/placeholder_title"
                         android:textSize="@dimen/abc_text_size_display_1_material" />
 
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="200dp"
+                        android:minHeight="@dimen/minimal_height"
                         android:orientation="horizontal"
                         android:weightSum="5">
 
@@ -87,31 +87,31 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:orientation="vertical"
-                            android:paddingEnd="2dp"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="2dp"
-                            android:paddingStart="5dp"
-                            android:paddingTop="8dp">
+                            android:paddingEnd="@dimen/min_padding_end"
+                            android:paddingLeft="@dimen/half_min_padding_left"
+                            android:paddingRight="@dimen/min_padding_right"
+                            android:paddingStart="@dimen/min_padding_start"
+                            android:paddingTop="@dimen/min_padding_top">
 
                             <TextView
                                 android:id="@+id/tv_release_date"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="2dp"
-                                android:paddingEnd="2dp"
-                                android:text="ini adalah tanggal rilis"
+                                android:paddingLeft="@dimen/min_padding_left"
+                                android:paddingRight="@dimen/min_padding_right"
+                                android:paddingEnd="@dimen/min_padding_end"
+                                tools:text="@string/placeholder_release_date"
                                 android:textSize="@dimen/abc_text_size_medium_material" />
 
                             <TextView
                                 android:id="@+id/tv_rating"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="2dp"
-                                android:paddingEnd="2dp"
+                                android:paddingLeft="@dimen/min_padding_left"
+                                android:paddingRight="@dimen/min_padding_right"
+                                android:paddingEnd="@dimen/min_padding_end"
                                 android:textColor="@color/colorPrimary"
-                                android:text="iniadalah rating"
+                                tools:text="@string/placeholder_rating"
                                 android:textSize="@dimen/abc_text_size_small_material" />
                         </LinearLayout>
 
@@ -129,17 +129,17 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAlignment="textStart"
-                            android:text="ini adalah penjelasan wawewow wilwwwww blablablablablablablablablablablablablablablablablabla"
+                            tools:text="@string/placeholder_description"
                             />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="10dp"
-                            android:paddingTop="10dp"
+                            android:paddingLeft="@dimen/min_padding_left"
+                            android:paddingTop="@dimen/min_padding_top"
                             android:text="@string/trailer_header"
-                            android:textColor="#000000"
-                            android:textSize="25sp" />
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="@dimen/abc_text_size_headline_material" />
 
                         <android.support.v7.widget.RecyclerView
                             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -147,17 +147,17 @@
                             android:id="@+id/trailers_recyclerView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginLeft="5dp"/>
+                            android:layout_marginRight="@dimen/half_min_padding_right"
+                            android:layout_marginLeft="@dimen/half_min_padding_left"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="10dp"
-                            android:paddingTop="10dp"
+                            android:paddingLeft="@dimen/min_padding_left"
+                            android:paddingTop="@dimen/min_padding_top"
                             android:text="@string/review_header"
-                            android:textColor="#000000"
-                            android:textSize="25sp" />
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="@dimen/abc_text_size_headline_material" />
 
                         <android.support.v7.widget.RecyclerView
                             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -165,8 +165,8 @@
                             android:id="@+id/review_recycleview"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginLeft="5dp"/>
+                            android:layout_marginRight="@dimen/min_layout_margin_right"
+                            android:layout_marginLeft="@dimen/min_layout_margin_left"/>
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>
@@ -178,8 +178,8 @@
         android:id="@+id/floating_favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:elevation="6dp"
-        app:pressedTranslationZ="12dp"
+        app:elevation="@dimen/floating_button_elevation"
+        app:pressedTranslationZ="@dimen/floating_button_z_translation"
         app:layout_anchor="@id/app_bar_layout"
         app:layout_anchorGravity="bottom|right|end"
         android:src="@drawable/not_favorite"

@@ -30,4 +30,9 @@
     <string name="trailer_header">Movie\'s Trailer</string>
 
     <string name="default_api_placholder">API_KEY_HERE</string>
+
+    <string name="placeholder_title">This is title</string>
+    <string name="placeholder_release_date">This is release date</string>
+    <string name="placeholder_rating">This is rating</string>
+    <string name="placeholder_description">This is description, can be long, can be short.</string>
 </resources>
